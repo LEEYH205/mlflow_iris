@@ -16,3 +16,4 @@ isort
 flake8
 bandit
 safety
+pre-commit
