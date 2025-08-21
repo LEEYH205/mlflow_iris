@@ -30,7 +30,10 @@ mlops-quickstart-mlflow/
 ├─ Dockerfile                 # API 서버용 Dockerfile
 ├─ docker-compose.yml         # MLflow UI + API 로컬 실행
 ├─ requirements.txt
-└─ .github/workflows/ci.yml   # GitHub Actions CI
+├─ .github/workflows/ci.yml   # GitHub Actions CI
+├─ artifacts.dvc              # DVC 아티팩트 추적
+├─ reports.dvc                # DVC 리포트 추적
+└─ .dvc/                      # DVC 설정 파일
 ```
 
 ## 빠른 시작(Quickstart)
@@ -84,11 +87,67 @@ docker compose up
 # API:    http://localhost:8000
 ```
 
-### 6) DVC 파이프라인 (선택사항)
+### 6) DVC 데이터 버전 관리 설정
 ```bash
+# DVC 초기화 및 로컬 저장소 설정
 dvc init
-dvc repro   # dvc.yaml의 파이프라인 실행
+mkdir -p ~/dvc-storage
+dvc remote add local ~/dvc-storage
+dvc remote default local
+
+# 데이터 및 모델 파일 DVC 추적
+dvc add artifacts/     # 모델 파일들
+dvc add reports/       # 리포트 파일들
+
+# Git에 .dvc 파일 추가
+git add *.dvc
+git commit -m "setup DVC tracking for artifacts and reports"
 ```
+
+## 🐘 DVC (Data Version Control) 사용법
+
+### DVC란?
+**DVC**는 Git과 유사한 방식으로 **데이터와 모델을 버전 관리**하는 도구입니다.
+
+#### 주요 장점
+- ✅ **대용량 파일 관리**: 모델, 데이터셋 등
+- ✅ **Git 저장소 크기 유지**: 작고 빠름
+- ✅ **데이터 파이프라인**: 자동화된 워크플로우
+- ✅ **협업**: 팀원들과 데이터 공유
+
+### DVC 명령어
+```bash
+# 상태 확인
+dvc status
+
+# 파일 목록
+dvc list .
+
+# 데이터 추가
+dvc add 폴더명/
+
+# 데이터 동기화
+dvc push    # 로컬 → 원격
+dvc pull    # 원격 → 로컬
+
+# 원격 저장소 관리
+dvc remote list
+dvc remote add myremote s3://mybucket/dvc
+```
+
+### 현재 DVC 구조
+```
+프로젝트/
+├── artifacts.dvc          # 모델 파일들 추적
+├── reports.dvc            # 리포트 파일들 추적
+├── .dvc/                  # DVC 설정
+└── ~/dvc-storage/        # 로컬 데이터 저장소
+```
+
+### DVC 원격 저장소 옵션
+1. **로컬 폴더** (현재 설정): `~/dvc-storage`
+2. **GitHub**: Git LFS 사용
+3. **클라우드**: AWS S3, Google Cloud, Azure 등
 
 ## 🎯 모델 성능 결과
 
@@ -104,6 +163,8 @@ dvc repro   # dvc.yaml의 파이프라인 실행
 - `artifacts/confusion_matrix.csv`: 혼동 행렬
 - `reports/data_quality_report.html`: 데이터 품질 보고서
 - `mlruns/`: MLflow 실험 기록
+- `artifacts.dvc`: DVC 아티팩트 추적 파일
+- `reports.dvc`: DVC 리포트 추적 파일
 
 ## 🔧 API 엔드포인트
 
@@ -112,8 +173,20 @@ dvc repro   # dvc.yaml의 파이프라인 실행
 - **GET /docs**: Swagger UI
 - **GET /redoc**: ReDoc 문서
 
+## 🚀 CI/CD 파이프라인
+
+GitHub Actions를 통한 자동화된 CI/CD 파이프라인이 포함되어 있습니다:
+
+- **코드 품질**: flake8, black, isort, bandit, safety
+- **테스트**: pytest, 코드 커버리지
+- **MLflow 테스트**: 모델 훈련, 아티팩트 검증
+- **Docker 빌드**: 이미지 빌드 및 기본 테스트
+- **통합 테스트**: FastAPI 서버 시작 및 API 테스트
+
 ## 💡 참고사항
 
 - MLflow는 기본적으로 **로컬 파일 기반**으로 기록합니다
 - 프로덕션 환경에서는 S3/MinIO + PostgreSQL 구성을 권장합니다
 - 모든 서비스는 가상환경에서 실행해야 합니다
+- DVC는 대용량 파일을 Git과 별도로 관리하여 저장소 크기를 유지합니다
+- 로컬 DVC 저장소는 `~/dvc-storage`에 설정되어 있습니다
