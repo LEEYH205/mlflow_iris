@@ -1,0 +1,18 @@
+services:
+  mlflow:
+    image: python:3.10-slim
+    working_dir: /app
+    command: bash -lc "pip install mlflow && mlflow ui --host 0.0.0.0 --port 5000"
+    volumes:
+      - ./:/app
+    ports:
+      - "5000:5000"
+
+  api:
+    build: .
+    volumes:
+      - ./artifacts:/app/artifacts
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mlflow
