@@ -6,13 +6,13 @@ services:
     volumes:
       - ./:/app
     ports:
-      - "5000:5000"
+      - "5001:5000"
 
   api:
     build: .
     volumes:
       - ./artifacts:/app/artifacts
     ports:
-      - "8000:8000"
+      - "8001:8000"
     depends_on:
       - mlflow

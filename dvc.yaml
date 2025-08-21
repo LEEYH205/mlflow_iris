@@ -1,0 +1,9 @@
+stages:
+  report:
+    cmd: python src/report.py
+    deps:
+    - src/report.py
+    - artifacts/model.pkl
+    outs:
+    - reports/data_quality_report.html:
+        persist: true

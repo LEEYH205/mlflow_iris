@@ -1,0 +1,18 @@
+schema: '2.0'
+stages:
+  report:
+    cmd: python src/report.py
+    deps:
+    - path: artifacts/model.pkl
+      hash: md5
+      md5: f876688986bf13ada4aaf480f3205bb1
+      size: 296401
+    - path: src/report.py
+      hash: md5
+      md5: 83a434c588cd1cfb6bbfedcefc6e544a
+      size: 2975
+    outs:
+    - path: reports/data_quality_report.html
+      hash: md5
+      md5: 6c3483ec86faec639f83372583444348
+      size: 2994
