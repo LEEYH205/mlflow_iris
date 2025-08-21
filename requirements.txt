@@ -11,3 +11,8 @@ pydantic
 pytest
 pytest-cov
 requests
+black
+isort
+flake8
+bandit
+safety

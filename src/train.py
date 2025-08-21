@@ -1,10 +1,11 @@
 import os
-import yaml
+from pathlib import Path
+
 import mlflow
 import mlflow.sklearn
 import numpy as np
 import pandas as pd
-from pathlib import Path
+import yaml
 from joblib import dump
 from sklearn.datasets import load_iris
 from sklearn.ensemble import RandomForestClassifier
@@ -14,18 +15,21 @@ from sklearn.model_selection import train_test_split
 ARTIFACT_DIR = Path("artifacts")
 ARTIFACT_DIR.mkdir(parents=True, exist_ok=True)
 
+
 def load_params(path: str = "params.yaml"):
     with open(path, "r", encoding="utf-8") as f:
         return yaml.safe_load(f)
+
 
 def main():
     params = load_params()
     X, y = load_iris(return_X_y=True, as_frame=True)
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y,
+        X,
+        y,
         train_size=params.get("train_size", 0.8),
         random_state=params.get("random_state", 42),
-        stratify=y
+        stratify=y,
     )
 
     n_estimators = params.get("n_estimators", 200)
@@ -33,7 +37,7 @@ def main():
     clf = RandomForestClassifier(
         n_estimators=n_estimators,
         max_depth=max_depth,
-        random_state=params.get("random_state", 42)
+        random_state=params.get("random_state", 42),
     )
 
     with mlflow.start_run(run_name="rf-iris"):
@@ -67,6 +71,7 @@ def main():
 
     print(f"Training done. Accuracy={acc:.4f}")
     print("Artifacts saved under ./artifacts and logged to MLflow.")
+
 
 if __name__ == "__main__":
     main()
