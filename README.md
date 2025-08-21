@@ -1,17 +1,17 @@
-# MLOps Quickstart: MLflow + FastAPI + DVC + Evidently
+# MLOps Quickstart: MLflow + FastAPI + DVC
 
 🚀 **Iris 꽃 분류 모델**을 활용한 MLOps 파이프라인 템플릿입니다.
 
-**실험 추적(MLflow)**, **모델 서빙(FastAPI)**, **데이터 버전관리(DVC)**, **데이터 품질 모니터링(Evidently)**를 포함한 완전한 예제로,
+**실험 추적(MLflow)**, **모델 서빙(FastAPI)**, **데이터 버전관리(DVC)**를 포함한 완전한 예제로,
 로컬 환경에서 바로 실행할 수 있습니다.
 
 ## ✨ 주요 기능
 
 - 🧪 **MLflow**: 모델 실험 추적 및 관리
 - 🚀 **FastAPI**: 실시간 모델 예측 REST API
-- 📊 **Evidently**: 데이터 품질 및 드리프트 모니터링
-- 🐳 **Docker**: 컨테이너화된 배포
+- 📊 **Docker**: 컨테이너화된 배포
 - 📈 **DVC**: 데이터 및 모델 버전 관리
+- 🔧 **CI/CD**: GitHub Actions 자동화
 
 ## 구성(Structure)
 ```
@@ -20,7 +20,7 @@ mlops-quickstart-mlflow/
 │  └─ main.py                 # FastAPI 추론 서버
 ├─ src/
 │  ├─ train.py                # 학습 + MLflow 로깅
-│  └─ report.py               # Evidently 데이터/성능 리포트
+│  └─ report.py               # 데이터 리포트 생성
 ├─ tests/
 │  └─ test_train.py           # 간단 테스트
 ├─ artifacts/                 # 학습 산출물 (model.pkl 등)
@@ -29,10 +29,13 @@ mlops-quickstart-mlflow/
 ├─ params.yaml                # 학습 하이퍼파라미터
 ├─ Dockerfile                 # API 서버용 Dockerfile
 ├─ docker-compose.yml         # MLflow UI + API 로컬 실행
-├─ requirements.txt
+├─ requirements.txt           # Python 3.12 호환 의존성
 ├─ .github/workflows/ci.yml   # GitHub Actions CI
 ├─ artifacts.dvc              # DVC 아티팩트 추적
 ├─ reports.dvc                # DVC 리포트 추적
+├─ .vscode/settings.json      # VS Code 자동 포맷팅 설정
+├─ .pre-commit-config.yaml    # Git pre-commit 훅
+├─ pyproject.toml            # Python 도구 설정
 └─ .dvc/                      # DVC 설정 파일
 ```
 
@@ -69,7 +72,7 @@ curl -X POST http://127.0.0.1:8000/predict -H "Content-Type: application/json" \
   -d '{"sepal_length":5.1,"sepal_width":3.5,"petal_length":1.4,"petal_width":0.2}'
 ```
 
-### 4) 데이터 품질 리포트 생성
+### 4) 데이터 리포트 생성
 ```bash
 python src/report.py
 # 📊 reports/data_quality_report.html 생성
@@ -177,16 +180,46 @@ dvc remote add myremote s3://mybucket/dvc
 
 GitHub Actions를 통한 자동화된 CI/CD 파이프라인이 포함되어 있습니다:
 
-- **코드 품질**: flake8, black, isort, bandit, safety
+- **코드 품질**: flake8, black, isort
 - **테스트**: pytest, 코드 커버리지
 - **MLflow 테스트**: 모델 훈련, 아티팩트 검증
 - **Docker 빌드**: 이미지 빌드 및 기본 테스트
 - **통합 테스트**: FastAPI 서버 시작 및 API 테스트
 
+## 🛠️ 개발 환경 설정
+
+### 자동 코드 포맷팅
+프로젝트에는 VS Code와 pre-commit 훅을 통한 자동 코드 포맷팅이 설정되어 있습니다:
+
+```bash
+# pre-commit 훅 설치
+pre-commit install
+
+# 모든 파일에 대해 포맷팅 실행
+pre-commit run --all-files
+```
+
+### VS Code 설정
+`.vscode/settings.json`에 다음 설정이 포함되어 있습니다:
+- **Black**: Python 코드 포맷터
+- **isort**: import 문 정렬
+- **자동 저장 시 포맷팅**: `formatOnSave: true`
+
 ## 💡 참고사항
 
+- **Python 3.12.10** 호환성 확인됨
 - MLflow는 기본적으로 **로컬 파일 기반**으로 기록합니다
 - 프로덕션 환경에서는 S3/MinIO + PostgreSQL 구성을 권장합니다
 - 모든 서비스는 가상환경에서 실행해야 합니다
 - DVC는 대용량 파일을 Git과 별도로 관리하여 저장소 크기를 유지합니다
 - 로컬 DVC 저장소는 `~/dvc-storage`에 설정되어 있습니다
+- **의존성 충돌 해결**: requirements.txt에서 호환성 문제가 있는 패키지 제거
+- **Docker 호환성**: MockModel을 통한 CI/CD 환경 지원
+
+## 🔄 최근 업데이트
+
+- ✅ **의존성 충돌 해결**: Python 3.12 호환성 확보
+- ✅ **Docker MockModel 버그 수정**: CI/CD 환경에서 정상 동작
+- ✅ **자동 코드 포맷팅**: Black, isort, flake8 통합
+- ✅ **pre-commit 훅**: Git 커밋 전 자동 검사
+- ✅ **VS Code 설정**: 개발 환경 최적화

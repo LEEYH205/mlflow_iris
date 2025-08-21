@@ -58,5 +58,9 @@ def predict(features: IrisInput):
     )
     pred = model.predict(X)[0]
     proba = getattr(model, "predict_proba", lambda x: None)(X)
-    proba_list = proba[0].tolist() if proba is not None else None
+    proba_list = (
+        proba[0].tolist()
+        if proba is not None and hasattr(proba[0], "tolist")
+        else (proba[0] if proba is not None else None)
+    )
     return {"prediction": int(pred), "proba": proba_list}
