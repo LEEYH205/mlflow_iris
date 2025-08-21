@@ -3,14 +3,21 @@ groups:
     rules:
       # API 응답시간 알림
       - alert: HighAPIResponseTime
-        expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 0.5
-        for: 2m
+        expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 0.1
+        for: 1m
         labels:
           severity: warning
           category: api
         annotations:
-          summary: "API 응답시간이 높습니다"
-          description: "95th percentile 응답시간이 500ms를 초과했습니다. 현재값: {{ $value }}s"
+          summary: "🚨 API 응답시간 경고 - {{ $labels.endpoint }}"
+          description: "95th percentile 응답시간이 100ms를 초과했습니다.
+
+• **현재값**: {{ $value }}s
+• **임계값**: 0.1s
+• **엔드포인트**: {{ $labels.endpoint }}
+• **메서드**: {{ $labels.method }}
+• **인스턴스**: {{ $labels.instance }}
+• **시간**: {{ $labels.instance }}"
 
       # API 에러율 알림
       - alert: HighAPIErrorRate
@@ -55,8 +62,14 @@ groups:
           severity: warning
           category: ml
         annotations:
-          summary: "ML 예측 응답시간이 높습니다"
-          description: "ML 예측 95th percentile 응답시간이 200ms를 초과했습니다. 현재값: {{ $value }}s"
+          summary: "⚠️ ML 모델 성능 저하 - {{ $labels.model_name }}"
+          description: "ML 예측 95th percentile 응답시간이 200ms를 초과했습니다.
+
+• **현재값**: {{ $value }}s
+• **임계값**: 0.2s
+• **모델명**: {{ $labels.model_name }}
+• **인스턴스**: {{ $labels.instance }}
+• **시간**: {{ $labels.instance }}"
 
       # ML 예측 처리량 저하 알림
       - alert: LowMLPredictionThroughput
