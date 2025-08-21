@@ -8,3 +8,6 @@ pyyaml
 evidently
 joblib
 pydantic
+pytest
+pytest-cov
+requests
