@@ -1,0 +1,96 @@
+apiVersion: 1
+
+notifiers:
+  - name: "Slack 알림"
+    type: slack
+    uid: slack_notifications
+    org_id: 1
+    is_default: false
+    settings:
+      url: "YOUR_SLACK_WEBHOOK_URL"
+      recipient: "#mlops-alerts"
+      mentionChannel: "here"
+      mentionUsers: ""
+      token: ""
+      username: "MLOps 알림봇"
+      iconEmoji: ":robot_face:"
+      iconUrl: ""
+      title: "🚨 MLOps 시스템 알림"
+      text: "{{.Message}}\n\n**알림 세부사항:**\n- 서비스: {{.Labels.category}}\n- 심각도: {{.Labels.severity}}\n- 시간: {{.StartsAt}}\n- 값: {{.Value}}"
+      use_demand: false
+    secure_settings: {}
+    created: "2024-01-01T00:00:00Z"
+    updated: "2024-01-01T00:00:00Z"
+
+  - name: "이메일 알림"
+    type: email
+    uid: email_notifications
+    org_id: 1
+    is_default: false
+    settings:
+      addresses: "admin@yourcompany.com,mlops-team@yourcompany.com"
+      singleEmail: false
+    secure_settings: {}
+    created: "2024-01-01T00:00:00Z"
+    updated: "2024-01-01T00:00:00Z"
+
+  - name: "웹훅 알림"
+    type: webhook
+    uid: webhook_notifications
+    org_id: 1
+    is_default: false
+    settings:
+      url: "https://your-webhook-endpoint.com/mlops-alerts"
+      httpMethod: "POST"
+      maxAlerts: "0"
+      title: "MLOps 시스템 알림"
+      message: "{{.Message}}"
+      username: ""
+      password: ""
+    secure_settings: {}
+    created: "2024-01-01T00:00:00Z"
+    updated: "2024-01-01T00:00:00Z"
+
+  - name: "PagerDuty 알림"
+    type: pagerduty
+    uid: pagerduty_notifications
+    org_id: 1
+    is_default: false
+    settings:
+      integrationKey: "YOUR_PAGERDUTY_INTEGRATION_KEY"
+      severity: "{{.Labels.severity}}"
+      class: "{{.Labels.category}}"
+      group: "MLOps"
+      client: "Grafana"
+      clientUrl: "{{.DashboardURL}}"
+      description: "{{.Message}}"
+    secure_settings: {}
+    created: "2024-01-01T00:00:00Z"
+    updated: "2024-01-01T00:00:00Z"
+
+  - name: "Teams 알림"
+    type: teams
+    uid: teams_notifications
+    org_id: 1
+    is_default: false
+    settings:
+      url: "YOUR_TEAMS_WEBHOOK_URL"
+      title: "🚨 MLOps 시스템 알림"
+      message: "{{.Message}}\n\n**알림 세부사항:**\n- 서비스: {{.Labels.category}}\n- 심각도: {{.Labels.severity}}\n- 시간: {{.StartsAt}}\n- 값: {{.Value}}"
+    secure_settings: {}
+    created: "2024-01-01T00:00:00Z"
+    updated: "2024-01-01T00:00:00Z"
+
+  - name: "MLOps_iris Bot 알림"
+    type: discord
+    uid: discord_notifications
+    org_id: 1
+    is_default: true
+    settings:
+      url: "${DISCORD_WEBHOOK_URL}"
+      title: "🚨 MLOps 시스템 알림"
+      message: "{{.Message}}\n\n**알림 세부사항:**\n- 서비스: {{.Labels.category}}\n- 심각도: {{.Labels.severity}}\n- 시간: {{.StartsAt}}\n- 값: {{.Value}}"
+      use_discord_username: false
+    secure_settings: {}
+    created: "2024-01-01T00:00:00Z"
+    updated: "2024-01-01T00:00:00Z"

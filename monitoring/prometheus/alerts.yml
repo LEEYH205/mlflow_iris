@@ -1,0 +1,118 @@
+groups:
+  - name: api_performance_alerts
+    rules:
+      # API 응답시간 알림
+      - alert: HighAPIResponseTime
+        expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 0.5
+        for: 2m
+        labels:
+          severity: warning
+          category: api
+        annotations:
+          summary: "API 응답시간이 높습니다"
+          description: "95th percentile 응답시간이 500ms를 초과했습니다. 현재값: {{ $value }}s"
+
+      # API 에러율 알림
+      - alert: HighAPIErrorRate
+        expr: (sum(rate(http_requests_total{status=~"5.."}[5m])) / sum(rate(http_requests_total[5m]))) * 100 > 5
+        for: 2m
+        labels:
+          severity: critical
+          category: api
+        annotations:
+          summary: "API 에러율이 높습니다"
+          description: "5xx 에러율이 5%를 초과했습니다. 현재값: {{ $value }}%"
+
+      # API 요청 처리량 저하 알림
+      - alert: LowAPIThroughput
+        expr: rate(http_requests_total[5m]) < 10
+        for: 5m
+        labels:
+          severity: warning
+          category: api
+        annotations:
+          summary: "API 요청 처리량이 낮습니다"
+          description: "API 요청 처리량이 10 req/s 미만입니다. 현재값: {{ $value }} req/s"
+
+  - name: ml_model_alerts
+    rules:
+      # ML 예측 에러율 알림
+      - alert: HighMLPredictionErrorRate
+        expr: (sum(rate(ml_predictions_total{prediction_class="error"}[5m])) / sum(rate(ml_predictions_total[5m]))) * 100 > 10
+        for: 2m
+        labels:
+          severity: critical
+          category: ml
+        annotations:
+          summary: "ML 예측 에러율이 높습니다"
+          description: "ML 예측 에러율이 10%를 초과했습니다. 현재값: {{ $value }}%"
+
+      # ML 예측 응답시간 알림
+      - alert: HighMLPredictionResponseTime
+        expr: histogram_quantile(0.95, rate(ml_prediction_duration_seconds_bucket[5m])) > 0.2
+        for: 2m
+        labels:
+          severity: warning
+          category: ml
+        annotations:
+          summary: "ML 예측 응답시간이 높습니다"
+          description: "ML 예측 95th percentile 응답시간이 200ms를 초과했습니다. 현재값: {{ $value }}s"
+
+      # ML 예측 처리량 저하 알림
+      - alert: LowMLPredictionThroughput
+        expr: rate(ml_predictions_total[5m]) < 5
+        for: 5m
+        labels:
+          severity: warning
+          category: ml
+        annotations:
+          summary: "ML 예측 처리량이 낮습니다"
+          description: "ML 예측 처리량이 5 req/s 미만입니다. 현재값: {{ $value }} req/s"
+
+  - name: system_alerts
+    rules:
+      # Prometheus 타겟 다운 알림
+      - alert: PrometheusTargetDown
+        expr: up == 0
+        for: 1m
+        labels:
+          severity: critical
+          category: system
+        annotations:
+          summary: "Prometheus 타겟이 다운되었습니다"
+          description: "{{ $labels.instance }} 타겟이 다운되었습니다"
+
+      # 메트릭 수집 실패 알림
+      - alert: MetricsCollectionFailure
+        expr: rate(scrape_duration_seconds[5m]) > 10
+        for: 2m
+        labels:
+          severity: warning
+          category: system
+        annotations:
+          summary: "메트릭 수집에 실패했습니다"
+          description: "메트릭 수집 시간이 10초를 초과했습니다. 현재값: {{ $value }}s"
+
+  - name: business_alerts
+    rules:
+      # 사용자 경험 저하 알림
+      - alert: PoorUserExperience
+        expr: (histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 1) and (rate(http_requests_total[5m]) > 50)
+        for: 3m
+        labels:
+          severity: critical
+          category: business
+        annotations:
+          summary: "사용자 경험이 저하되고 있습니다"
+          description: "높은 트래픽에서 응답시간이 1초를 초과했습니다. 응답시간: {{ $value }}s"
+
+      # 서비스 가용성 저하 알림
+      - alert: ServiceAvailabilityDegraded
+        expr: (sum(rate(http_requests_total{status=~"2.."}[5m])) / sum(rate(http_requests_total[5m]))) * 100 < 95
+        for: 5m
+        labels:
+          severity: critical
+          category: business
+        annotations:
+          summary: "서비스 가용성이 저하되었습니다"
+          description: "성공률이 95% 미만입니다. 현재값: {{ $value }}%"
