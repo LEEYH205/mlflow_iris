@@ -1,7 +1,5 @@
 from pathlib import Path
 
-import pandas as pd
-from evidently import Report
 from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
 
@@ -25,13 +23,17 @@ def main():
     # 기본 통계 정보 출력
     print(f"Training data shape: {train_df.shape}")
     print(f"Test data shape: {test_df.shape}")
-    print(f"Training data columns: {list(train_df.columns)}")
+    columns_list = list(train_df.columns)
+    print("Training data columns:", columns_list)
 
     # 데이터 품질 기본 정보
     print("\nData Quality Summary:")
-    print(f"Missing values in training: {train_df.isnull().sum().sum()}")
-    print(f"Missing values in test: {test_df.isnull().sum().sum()}")
-    print(f"Training data types: {train_df.dtypes.to_dict()}")
+    missing_train = train_df.isnull().sum().sum()
+    missing_test = test_df.isnull().sum().sum()
+    print(f"Missing values in training: {missing_train}")
+    print(f"Missing values in test: {missing_test}")
+    dtypes_dict = train_df.dtypes.to_dict()
+    print(f"Training data types: {dtypes_dict}")
 
     # 간단한 HTML 보고서 생성
     html_content = f"""
@@ -41,26 +43,43 @@ def main():
         <title>Data Quality Report</title>
         <style>
             body {{ font-family: Arial, sans-serif; margin: 40px; }}
-            .section {{ margin: 20px 0; padding: 20px; border: 1px solid #ddd; border-radius: 5px; }}
+            .section {{
+                margin: 20px 0;
+                padding: 20px;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+            }}
             .metric {{ margin: 10px 0; }}
         </style>
     </head>
     <body>
         <h1>Data Quality Report</h1>
-        
+
         <div class="section">
             <h2>Dataset Overview</h2>
-            <div class="metric"><strong>Training data shape:</strong> {train_df.shape}</div>
-            <div class="metric"><strong>Test data shape:</strong> {test_df.shape}</div>
-            <div class="metric"><strong>Features:</strong> {list(train_df.columns)}</div>
+            <div class="metric">
+                <strong>Training data shape:</strong> {train_df.shape}
+            </div>
+            <div class="metric">
+                <strong>Test data shape:</strong> {test_df.shape}
+            </div>
+            <div class="metric">
+                <strong>Features:</strong> {list(train_df.columns)}
+            </div>
         </div>
-        
+
         <div class="section">
             <h2>Data Quality Metrics</h2>
-            <div class="metric"><strong>Missing values in training:</strong> {train_df.isnull().sum().sum()}</div>
-            <div class="metric"><strong>Missing values in test:</strong> {test_df.isnull().sum().sum()}</div>
+            <div class="metric">
+                <strong>Missing values in training:</strong>
+                {train_df.isnull().sum().sum()}
+            </div>
+            <div class="metric">
+                <strong>Missing values in test:</strong>
+                {test_df.isnull().sum().sum()}
+            </div>
         </div>
-        
+
         <div class="section">
             <h2>Feature Statistics</h2>
             {train_df.describe().to_html()}
