@@ -30,10 +30,10 @@ def get_model():
 
 class MockModel:
     """Mock model for CI/CD testing when artifacts are not available"""
-    
+
     def predict(self, X):
         return [0]  # Default prediction
-    
+
     def predict_proba(self, X):
         return [[1.0, 0.0, 0.0]]  # Default probabilities
 
