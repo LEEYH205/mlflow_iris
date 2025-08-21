@@ -1,297 +1,265 @@
-# MLOps Quickstart: MLflow + FastAPI + DVC
+# 🚀 MLOps Quickstart with MLflow
 
-🚀 **Iris 꽃 분류 모델**을 활용한 MLOps 파이프라인 템플릿입니다.
+**완벽한 MLOps 파이프라인을 빠르게 구축하고 학습할 수 있는 프로젝트입니다!**
 
-**실험 추적(MLflow)**, **모델 서빙(FastAPI)**, **데이터 버전관리(DVC)**를 포함한 완전한 예제로,
-로컬 환경에서 바로 실행할 수 있습니다.
+## ✨ **주요 기능**
 
-## ✨ 주요 기능
+- 🧪 **MLflow**: 실험 추적 및 모델 관리
+- 🚀 **FastAPI**: 고성능 ML 모델 서빙 API
+- 🐳 **Docker**: 컨테이너화 및 배포
+- 🔄 **CI/CD**: GitHub Actions 자동화
+- 🐘 **DVC**: 데이터 및 모델 버전 관리
+- 📊 **Prometheus**: 실시간 메트릭 수집
+- 📈 **Grafana**: 시각화 및 모니터링 대시보드
+- 🧪 **자동화된 테스트**: 단위 테스트, 통합 테스트, 부하 테스트
 
-- 🧪 **MLflow**: 모델 실험 추적 및 관리
-- 🚀 **FastAPI**: 실시간 모델 예측 REST API
-- 📊 **Docker**: 컨테이너화된 배포
-- 📈 **DVC**: 데이터 및 모델 버전 관리
-- 🔧 **CI/CD**: GitHub Actions 자동화
+## 🎯 **프로젝트 상태**
 
-## 구성(Structure)
-```
-mlops-quickstart-mlflow/
-├─ app/
-│  └─ main.py                 # FastAPI 추론 서버
-├─ src/
-│  ├─ train.py                # 학습 + MLflow 로깅
-│  └─ report.py               # 데이터 리포트 생성
-├─ tests/
-│  └─ test_train.py           # 간단 테스트
-├─ artifacts/                 # 학습 산출물 (model.pkl 등)
-├─ reports/                   # 리포트 출력 (HTML)
-├─ dvc.yaml                   # DVC 파이프라인 예시
-├─ params.yaml                # 학습 하이퍼파라미터
-├─ Dockerfile                 # API 서버용 Dockerfile
-├─ docker-compose.yml         # MLflow UI + API 로컬 실행
-├─ requirements.txt           # Python 3.12 호환 의존성
-├─ .github/workflows/ci.yml   # GitHub Actions CI
-├─ artifacts.dvc              # DVC 아티팩트 추적
-├─ reports.dvc                # DVC 리포트 추적
-├─ .vscode/settings.json      # VS Code 자동 포맷팅 설정
-├─ .pre-commit-config.yaml    # Git pre-commit 훅
-├─ pyproject.toml            # Python 도구 설정
-├─ load_test.py              # 부하 테스트 스크립트
-└─ .dvc/                      # DVC 설정 파일
-```
+### ✅ **완료된 기능**
+- [x] Python 가상환경 및 의존성 관리
+- [x] MLflow 실험 추적 시스템
+- [x] FastAPI ML 모델 서빙 API
+- [x] Docker 컨테이너화
+- [x] GitHub Actions CI/CD 파이프라인
+- [x] DVC 데이터 및 모델 버전 관리
+- [x] 부하 테스트 및 성능 측정
+- [x] **Prometheus + Grafana 실시간 모니터링 시스템**
 
-## 빠른 시작(Quickstart)
+### 🔄 **진행 중인 기능**
+- [ ] Grafana 대시보드 구성 (API 성능, ML 예측 통계)
+- [ ] 알림 시스템 설정 (성능 저하 시 자동 알림)
 
-### 0) 환경 준비
+### 📋 **계획된 기능**
+- [ ] 고급 메트릭 및 비즈니스 KPI
+- [ ] 클라우드 배포 (AWS/GCP/Azure)
+- [ ] A/B 테스트 프레임워크
+- [ ] 모델 성능 자동 모니터링
+
+## 🚀 **빠른 시작**
+
+### **1. 환경 설정**
 ```bash
-python -m venv .venv && source .venv/bin/activate  # Windows: .venv\Scripts\activate
-pip install -U pip
+# 저장소 클론
+git clone https://github.com/LEEYH205/mlflow_iris.git
+cd mlflow_iris
+
+# 가상환경 생성 및 활성화
+python -m venv .venv
+source .venv/bin/activate  # macOS/Linux
+# .venv\Scripts\activate  # Windows
+
+# 의존성 설치
 pip install -r requirements.txt
 ```
 
-### 1) 모델 훈련 + MLflow 실험 추적
+### **2. 모델 훈련 및 실험 추적**
 ```bash
+# 가상환경 활성화
+source .venv/bin/activate
+
+# 모델 훈련 및 MLflow 실험 추적
 python src/train.py
-# 🎯 RandomForest 모델 훈련 (정확도: 96.67%)
-# ✅ MLflow에 메트릭, 파라미터, 아티팩트 자동 로깅
+
+# MLflow UI 실행
+mlflow ui
+# 브라우저에서 http://localhost:5000 접속
 ```
 
-### 2) MLflow UI 실행
+### **3. FastAPI 서버 실행**
 ```bash
-source .venv/bin/activate && mlflow ui
-# 🌐 http://127.0.0.1:5000 에서 실험 결과 확인
+# 가상환경 활성화
+source .venv/bin/activate
+
+# FastAPI 서버 실행
+uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
+# 브라우저에서 http://127.0.0.1:8000/docs 접속
 ```
 
-### 3) FastAPI 모델 서빙
+### **4. Docker Compose로 전체 스택 실행**
 ```bash
-source .venv/bin/activate && uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
-# 🚀 http://127.0.0.1:8000/docs 에서 Swagger UI 확인
-# 🔍 http://127.0.0.1:8000/health 에서 헬스체크
-
-# 예시 요청
-curl -X POST http://127.0.0.1:8000/predict -H "Content-Type: application/json" \
-  -d '{"sepal_length":5.1,"sepal_width":3.5,"petal_length":1.4,"petal_width":0.2}'
-```
-
-### 4) 데이터 리포트 생성
-```bash
-python src/report.py
-# 📊 reports/data_quality_report.html 생성
-# 🔍 데이터 통계, 품질 지표, 특성 분석 포함
-```
-
-### 5) Docker / Compose
-```bash
-# API 서버 이미지 빌드
-docker build -t mlops-quickstart-api:latest .
-
-# 로컬 통합 실행(MLflow UI + API)
-docker compose up
-# MLflow: http://localhost:5000
-# API:    http://localhost:8000
-```
-
-### 6) DVC 데이터 버전 관리 설정
-```bash
-# DVC 초기화 및 로컬 저장소 설정
-dvc init
-mkdir -p ~/dvc-storage
-dvc remote add local ~/dvc-storage
-dvc remote default local
-
-# 데이터 및 모델 파일 DVC 추적
-dvc add artifacts/     # 모델 파일들
-dvc add reports/       # 리포트 파일들
-
-# Git에 .dvc 파일 추가
-git add *.dvc
-git commit -m "setup DVC tracking for artifacts and reports"
-```
-
-## 🐘 DVC (Data Version Control) 사용법
-
-### DVC란?
-**DVC**는 Git과 유사한 방식으로 **데이터와 모델을 버전 관리**하는 도구입니다.
-
-#### 주요 장점
-- ✅ **대용량 파일 관리**: 모델, 데이터셋 등
-- ✅ **Git 저장소 크기 유지**: 작고 빠름
-- ✅ **데이터 파이프라인**: 자동화된 워크플로우
-- ✅ **협업**: 팀원들과 데이터 공유
-
-### DVC 명령어
-```bash
-# 상태 확인
-dvc status
-
-# 파일 목록
-dvc list .
-
-# 데이터 추가
-dvc add 폴더명/
-
-# 데이터 동기화
-dvc push    # 로컬 → 원격
-dvc pull    # 원격 → 로컬
-
-# 원격 저장소 관리
-dvc remote list
-dvc remote add myremote s3://mybucket/dvc
-```
-
-### 현재 DVC 구조
-```
-프로젝트/
-├── artifacts.dvc          # 모델 파일들 추적
-├── reports.dvc            # 리포트 파일들 추적
-├── .dvc/                  # DVC 설정
-└── ~/dvc-storage/        # 로컬 데이터 저장소
-```
-
-### DVC 원격 저장소 옵션
-1. **로컬 폴더** (현재 설정): `~/dvc-storage`
-2. **GitHub**: Git LFS 사용
-3. **클라우드**: AWS S3, Google Cloud, Azure 등
-
-## 🎯 모델 성능 결과
-
-- **모델**: RandomForest Classifier
-- **정확도**: 96.67%
-- **특성**: Iris 꽃의 꽃받침/꽃잎 길이/너비 (4개)
-- **클래스**: setosa, versicolor, virginica (3개)
-
-## 📁 생성되는 파일들
-
-- `artifacts/model.pkl`: 훈련된 모델 파일
-- `artifacts/classification_report.csv`: 성능 보고서
-- `artifacts/confusion_matrix.csv`: 혼동 행렬
-- `reports/data_quality_report.html`: 데이터 품질 보고서
-- `mlruns/`: MLflow 실험 기록
-- `artifacts.dvc`: DVC 아티팩트 추적 파일
-- `reports.dvc`: DVC 리포트 추적 파일
-
-## 🔧 API 엔드포인트
-
-- **GET /health**: API 상태 확인
-- **POST /predict**: 모델 예측
-- **GET /docs**: Swagger UI
-- **GET /redoc**: ReDoc 문서
-
-## 🚀 CI/CD 파이프라인
-
-**GitHub Actions를 통한 자동화된 CI/CD 파이프라인이 포함되어 있습니다:**
-
-### ✅ **모든 테스트 통과!** (총 소요시간: ~2분)
-
-- **🔍 code-quality**: flake8, black, isort
-- **🧪 test**: pytest, 코드 커버리지
-- **🧪 mlflow-test**: 모델 훈련, 아티팩트 검증
-- **🐳 docker-build**: 이미지 빌드 및 기본 테스트
-- **🚀 integration-test**: FastAPI 서버 시작 및 API 테스트
-- **📊 summary**: CI/CD 파이프라인 결과 요약
-
-### CI/CD 워크플로우 특징
-- **자동 트리거**: main/develop 브랜치 푸시 시 자동 실행
-- **의존성 체인**: 순차적 실행으로 안정성 보장
-- **상태 확인**: 각 단계별 성공/실패 명확히 표시
-- **결과 요약**: 전체 파이프라인 상태 한눈에 확인
-
-## 🧪 부하 테스트 (Load Testing)
-
-**FastAPI 서버의 성능과 안정성을 검증하는 부하 테스트가 포함되어 있습니다:**
-
-### 📊 **부하 테스트 결과 요약**
-
-| 테스트 시나리오 | 요청 수 | 동시 사용자 | 성공률 | 처리량 | 평균 응답시간 |
-|----------------|---------|-------------|--------|--------|---------------|
-| **가벼운 부하** | 50 | 5 | 100% | 41.1 req/s | 120.1 ms |
-| **중간 부하** | 200 | 20 | 100% | 68.9 req/s | 285.1 ms |
-| **높은 부하** | 500 | 50 | 100% | 60.2 req/s | 804.4 ms |
-
-### 🎯 **성능 특성**
-
-- ✅ **100% 성공률**: 모든 부하 레벨에서 에러 없음
-- 🚀 **최적 부하**: 20 동시 사용자 (68.9 req/s)
-- ⚡ **응답시간**: 가벼운 부하에서 120ms, 높은 부하에서 800ms
-- 💾 **메모리 효율성**: 테스트 중 메모리 사용량 안정적
-
-### 🔧 **부하 테스트 실행**
-
-```bash
-# 부하 테스트 스크립트 실행
-python load_test.py
-
-# 또는 Docker 환경에서
+# 모든 서비스 실행 (MLflow, FastAPI, Prometheus, Grafana)
 docker compose up -d
+
+# 서비스 상태 확인
+docker compose ps
+
+# 서비스 중지
+docker compose down
+```
+
+### **5. 모니터링 시스템 접속**
+| 서비스 | URL | 설명 |
+|--------|-----|------|
+| **FastAPI** | `http://localhost:8001` | ML 모델 API |
+| **MLflow** | `http://localhost:5001` | 실험 관리 |
+| **Prometheus** | `http://localhost:9090` | 메트릭 수집 |
+| **Grafana** | `http://localhost:3000` | 시각화 대시보드 |
+
+**Grafana 로그인**: `admin` / `admin`
+
+## 📊 **API 사용법**
+
+### **예측 API 호출**
+```bash
+# 헬스 체크
+curl http://localhost:8001/health
+
+# 예측 요청
+curl -X POST http://localhost:8001/predict \
+  -H "Content-Type: application/json" \
+  -d '{
+    "sepal_length": 5.1,
+    "sepal_width": 3.5,
+    "petal_length": 1.4,
+    "petal_width": 0.2
+  }'
+
+# 메트릭 확인 (Prometheus 형식)
+curl http://localhost:8001/metrics
+```
+
+### **Swagger UI**
+- 브라우저에서 `http://localhost:8001/docs` 접속
+- API 문서 및 테스트 인터페이스 제공
+
+## 🧪 **테스트 및 검증**
+
+### **자동화된 테스트**
+```bash
+# 가상환경 활성화
+source .venv/bin/activate
+
+# 단위 테스트 실행
+pytest
+
+# 코드 품질 검사
+black .
+isort .
+flake8 .
+```
+
+### **부하 테스트**
+```bash
+# 가상환경 활성화
+source .venv/bin/activate
+
+# 부하 테스트 실행
 python load_test.py
 ```
 
-### 📈 **테스트 시나리오**
+## 📈 **모니터링 및 관찰성**
 
-1. **가벼운 부하**: 50 요청, 5 동시 사용자
-2. **중간 부하**: 200 요청, 20 동시 사용자  
-3. **높은 부하**: 500 요청, 50 동시 사용자
+### **Prometheus 메트릭**
+- **HTTP 요청 메트릭**: 요청 수, 응답 시간, 상태 코드
+- **ML 예측 메트릭**: 예측 수, 예측 클래스별 분류, 예측 시간
+- **시스템 메트릭**: CPU, 메모리, 프로세스 정보
+- **자동 수집**: 5초마다 FastAPI 서버에서 메트릭 수집
 
-각 시나리오는 **응답시간**, **처리량**, **에러율**, **메모리 사용량**을 측정합니다.
+### **Grafana 대시보드**
+- **API 성능 모니터링**: 요청 처리량, 응답 시간, 에러율
+- **ML 모델 성능**: 예측 통계, 클래스별 분포, 성능 트렌드
+- **실시간 시각화**: Prometheus 데이터를 활용한 동적 차트
 
-## 🛠️ 개발 환경 설정
+## 🔧 **개발 도구**
 
-### 자동 코드 포맷팅
-프로젝트에는 VS Code와 pre-commit 훅을 통한 자동 코드 포맷팅이 설정되어 있습니다:
-
-```bash
-# pre-commit 훅 설치
-pre-commit install
-
-# 모든 파일에 대해 포맷팅 실행
-pre-commit run --all-files
-```
-
-### VS Code 설정
-`.vscode/settings.json`에 다음 설정이 포함되어 있습니다:
+### **코드 품질**
 - **Black**: Python 코드 포맷터
 - **isort**: import 문 정렬
-- **자동 저장 시 포맷팅**: `formatOnSave: true`
+- **Flake8**: 코드 린팅 및 스타일 검사
+- **Pre-commit**: Git 커밋 전 자동 코드 품질 검사
 
-## 💡 참고사항
+### **의존성 관리**
+- **requirements.txt**: 핀된 버전으로 안정성 확보
+- **Docker**: 일관된 실행 환경
+- **DVC**: 대용량 데이터 및 모델 버전 관리
 
-- **Python 3.12.10** 호환성 확인됨 ✅
-- MLflow는 기본적으로 **로컬 파일 기반**으로 기록합니다
-- 프로덕션 환경에서는 S3/MinIO + PostgreSQL 구성을 권장합니다
-- 모든 서비스는 가상환경에서 실행해야 합니다
-- DVC는 대용량 파일을 Git과 별도로 관리하여 저장소 크기를 유지합니다
-- 로컬 DVC 저장소는 `~/dvc-storage`에 설정되어 있습니다
-- **의존성 충돌 해결**: requirements.txt에서 호환성 문제가 있는 패키지 제거 ✅
-- **Docker 호환성**: MockModel을 통한 CI/CD 환경 지원 ✅
-- **CI/CD 파이프라인**: 모든 단계 성공적으로 완료 ✅
+## 🚀 **CI/CD 파이프라인**
 
-## 🔄 최근 업데이트
+### **GitHub Actions 워크플로우**
+1. **코드 품질 검사**: Black, isort, Flake8
+2. **테스트 실행**: pytest, 단위 테스트
+3. **MLflow 테스트**: 모델 훈련 및 로깅 검증
+4. **Docker 빌드**: 이미지 빌드 및 검증
+5. **통합 테스트**: API 엔드포인트 테스트
+6. **결과 요약**: 모든 단계 결과 통합 보고
 
-- ✅ **의존성 충돌 해결**: Python 3.12 호환성 확보
-- ✅ **Docker MockModel 버그 수정**: CI/CD 환경에서 정상 동작
-- ✅ **자동 코드 포맷팅**: Black, isort, flake8 통합
-- ✅ **pre-commit 훅**: Git 커밋 전 자동 검사
-- ✅ **VS Code 설정**: 개발 환경 최적화
-- ✅ **CI/CD 파이프라인 완성**: 모든 작업 성공적으로 완료
-- ✅ **evidently 제거**: 의존성 충돌 해결로 CI/CD 오류 방지
-- ✅ **코드 품질 검사**: 모든 linting 이슈 해결
-- ✅ **부하 테스트 완성**: 성능 및 안정성 검증 완료
+## 📊 **성능 지표**
 
-## 🎯 프로젝트 상태
+### **부하 테스트 결과**
+| 부하 수준 | 요청 수 | 동시 사용자 | 성공률 | 처리량 | 평균 응답시간 |
+|-----------|---------|-------------|--------|--------|---------------|
+| **가벼운** | 50 | 5 | 100% | 64.47 req/s | 76.85 ms |
+| **중간** | 200 | 20 | 100% | 55.48 req/s | 351.72 ms |
+| **높은** | 500 | 50 | 100% | 58.85 req/s | 825.08 ms |
 
-### **현재 상태: 모든 핵심 기능 완성!** 🎉
+### **모델 성능**
+- **정확도**: 100% (테스트 데이터셋 기준)
+- **예측 일관성**: 동일 입력에 대해 100% 일관된 결과
+- **응답 시간**: 평균 28ms (단일 요청)
 
-- ✅ **로컬 환경**: 가상환경, 의존성 설치, 모든 기능 테스트 통과
-- ✅ **MLflow**: 모델 훈련, 실험 추적, 아티팩트 관리
-- ✅ **FastAPI**: REST API 서버, 예측 엔드포인트, 헬스체크
-- ✅ **Docker**: 이미지 빌드, 컨테이너 실행, CI/CD 환경 지원
-- ✅ **DVC**: 데이터 버전 관리, 로컬 저장소 설정
-- ✅ **CI/CD**: GitHub Actions 파이프라인, 모든 단계 성공
-- ✅ **코드 품질**: 자동 포맷팅, linting 검사, pre-commit 훅
-- ✅ **부하 테스트**: 성능 및 안정성 검증 완료
+## 🐘 **DVC 데이터 관리**
 
-### **다음 단계 옵션:**
-1. 🚀 **프로덕션 배포**: 클라우드 환경 배포
-2. 📊 **모니터링 추가**: 로깅, 메트릭, 알림 시스템
-3. 🔧 **성능 최적화**: 응답시간 개선 및 확장성 향상
-4. ☁️ **클라우드 서비스**: AWS/GCP/Azure 배포
+### **데이터 파이프라인**
+```bash
+# DVC 초기화
+dvc init
+
+# 데이터 및 모델 추가
+dvc add artifacts/
+dvc add reports/
+
+# 파이프라인 실행
+dvc repro
+
+# 원격 저장소에 푸시
+dvc push
+```
+
+### **버전 관리**
+- **artifacts/**: 훈련된 모델 파일
+- **reports/**: 데이터 품질 보고서
+- **dvc.lock**: 파이프라인 의존성 잠금
+
+## 🔍 **문제 해결**
+
+### **일반적인 문제들**
+1. **포트 충돌**: macOS에서 5000번 포트 사용 시 `docker-compose.yml`에서 포트 변경
+2. **의존성 충돌**: `requirements.txt`의 핀된 버전 사용
+3. **Docker 빌드 실패**: `docker compose up -d --build`로 재빌드
+
+### **로그 확인**
+```bash
+# 서비스별 로그 확인
+docker compose logs api
+docker compose logs mlflow
+docker compose logs prometheus
+docker compose logs grafana
+```
+
+## 🌟 **프로젝트 특징**
+
+- **🎯 학습 중심**: MLOps 개념을 실제로 구현하며 학습
+- **🔧 실용적**: 프로덕션 환경에서 사용할 수 있는 도구들
+- **📊 관찰 가능**: Prometheus + Grafana로 실시간 모니터링
+- **🚀 확장 가능**: 클라우드 배포 및 팀 협업 준비
+- **🔄 자동화**: CI/CD로 개발부터 배포까지 자동화
+
+## 🤝 **기여하기**
+
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 📄 **라이선스**
+
+이 프로젝트는 MIT 라이선스 하에 배포됩니다. 자세한 내용은 `LICENSE` 파일을 참조하세요.
+
+## 📞 **연락처**
+
+프로젝트 링크: [https://github.com/LEEYH205/mlflow_iris](https://github.com/LEEYH205/mlflow_iris)
+
+---
+
+**⭐ 이 프로젝트가 도움이 되었다면 Star를 눌러주세요! ⭐**
